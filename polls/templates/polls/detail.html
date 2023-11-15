@@ -1,0 +1,49 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<div class="bg-body-tertiary p-5 rounded">
+
+
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <div class="card" style="width: 30rem;  margin: auto;">
+        <h5 class="card-header">{{ question.question_text }}</h5>
+        <div class="card-body">
+            <form action="{% url 'polls:vote' question.id %}" method="post">
+                {% csrf_token %}
+                <ul class="list-group">
+                {% for choice in question.choice_set.all %}
+
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" type="radio" id="choice{{ forloop.counter }}" value="{{ choice.id }}" aria-label="Radio button for following text input" name="choice">
+                    <label class="form-check-label" for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+                </li>
+                    
+                {% endfor %}
+                <br>
+            
+                <input class="btn btn-primary" type="submit" value="Vote">
+                </form>
+
+        </div>
+    </div>
+
+
+
+
+    
+
+  </div>
+
+
+
+
+
+
+  
+
+  {% endblock %}

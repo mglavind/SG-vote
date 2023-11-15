@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="bg-body-tertiary p-5 rounded">
+<h1>{{ question.question_text }}</h1>
+<p> Du havde muligheden for at vælge: </p>
+<ul>
+{% for choice in question.choice_set.all %}
+    <li>{{ choice.choice_text }} </li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}

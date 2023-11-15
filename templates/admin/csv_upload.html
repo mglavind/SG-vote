@@ -1,0 +1,17 @@
+{% extends 'admin/base.html' %}
+
+
+{% block content %}
+
+<div>
+    <p> Du kan evt eksportere en .csv fil fra siden først, for at se hvordan filen du uploader skal se ud </p> <br>
+   <form action="." method="POST" enctype="multipart/form-data"> 
+    {{ form.as_p}}
+    {% csrf_token %}
+    <button class="button" type="submit">
+        Upload CSV
+    </button>
+   </form>
+</div>
+
+{% endblock %}

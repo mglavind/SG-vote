@@ -1,0 +1,35 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark navbar-light SG-red" data-bs-theme="dark">
+    <div class="container-fluid">
+
+        <a class="navbar-brand d-flex text-light" href="{% url 'polls:index' %}">
+            <img src="{% static 'polls/sg-logo.svg' %}"  alt="sg-ogo" width="30" height="30" class="d-inline-block align-text-top">
+            
+        </a>
+        <a class="navbar-brand text-light" href="{% url 'polls:index' %}">SG - Afstemning</a>
+
+
+
+        <div class="justify-content-end" >
+            <div class="dropdown">
+                <a class="nav-link d-flex align-items-center text-light" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% load bootstrap_icons %}
+                    <span class="me-2">Hej {{ user.first_name }}!</span>
+                    {% bs_icon 'person-circle' %} 
+                </a>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    {% if request.user.is_authenticated %}
+                        <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'polls:logout_user' %}">Log ud</a>
+
+                    {% endif %}
+                
+                    {% if request.user.is_authenticated and request.user.is_staff %}
+                        <a class="dropdown-item" href="{% url 'admin:index' %}">Adminstrator</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
