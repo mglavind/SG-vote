@@ -13,10 +13,16 @@ from .forms import RegisterUserForm
 
 from .models import Choice, Question, Member, MemberVote
 
+@login_required
+def home(request):
+	return render(request, 
+		'index.html', {
+		})
+
 
 def login_user(request):
     if request.method == "POST":
-        username = request.POST['username'].lower()  # Convert to lowercase
+        username = request.POST['username'].lower()
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
@@ -24,7 +30,7 @@ def login_user(request):
             return redirect('polls:index')
         else:
             messages.error(request, "There was an error logging in. Please try again.")
-            return redirect('login_user')
+            return redirect('polls:login_user')  # Update this line
     else:
         return render(request, 'polls/login.html', {})
 
