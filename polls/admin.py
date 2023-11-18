@@ -68,10 +68,10 @@ class MemberAdmin(admin.ModelAdmin):
             response.write(u'\ufeff'.encode('utf8'))
 
             writer = csv.writer(response)
-            writer.writerow(['First Name', 'Last Name', 'Username', 'Email'])
+            writer.writerow(['First Name', 'Last Name', 'Username', 'Email', "Room Number", "Gang"])
 
             for member in queryset:
-                writer.writerow([member.first_name, member.last_name, member.username, member.email])
+                writer.writerow([member.first_name, member.last_name, member.username, member.email, member.room_number, member.gang])
             return response
     export_to_csv.short_description = "Export selected members to CSV"
     
@@ -98,6 +98,8 @@ class MemberAdmin(admin.ModelAdmin):
                     "last_name": fields[1],
                     "username": fields[2],
                     "email": fields[3],
+                    "room_number": fields[4],
+                    "gang": fields[5],
                 }
                 
                 # Generate a random password (you can customize the length and characters)
