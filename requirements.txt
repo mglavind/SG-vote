@@ -23,7 +23,7 @@ jsonschema==4.17.3
 packaging==23.1
 platformdirs==2.6.2
 #psycopg2==2.8
-psycopg2==2.9.3
+psycopg2==2.9.9
 pyparsing==3.0.8
 pypng==0.0.19
 pyproject_hooks==1.0.0
