@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.urls.resolvers import URLPattern
 from django.urls import path
 from django.http import HttpResponseRedirect, HttpResponse
+from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter, ChoiceDropdownFilter
 from django.contrib import admin, messages
 from typing import List
 from datetime import datetime
@@ -61,6 +62,10 @@ class MemberAdmin(admin.ModelAdmin):
         "last_updated",
     ]
     actions = ["export_to_csv", "send_email_action"]
+    search_fields = ['first_name', 'last_name', 'username', "room_number", "gang", "email"]
+    list_filter = (
+        ('gang', ChoiceDropdownFilter),
+    )
 
     def export_to_csv(modeladmin, request, queryset):
             response = HttpResponse(content_type='text/csv')
