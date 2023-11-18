@@ -137,10 +137,10 @@ class MemberAdmin(admin.ModelAdmin):
     
     
     def send_email_action(self, request, queryset):
-        email_template = "Mpollsember/reset_password_guide_email.html"
+        email_template = "polls/reset_password_guide_email.html"
 
         for member in queryset:
-            subject = "Velkommen til Seniorkursus Slettens booking system"
+            subject = "Velkommen til stemmesiden for Studentergaarden: SG-vote"
             context = {'member': member}
             message = render_to_string(email_template, context)
             plain_message = strip_tags(message)
