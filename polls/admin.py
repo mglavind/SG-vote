@@ -63,9 +63,7 @@ class MemberAdmin(admin.ModelAdmin):
     ]
     actions = ["export_to_csv", "send_email_action"]
     search_fields = ['first_name', 'last_name', 'username', "room_number", "gang", "email"]
-    list_filter = (
-        ('gang', ChoiceDropdownFilter),
-    )
+    list_filter = ['gang']
 
     def export_to_csv(modeladmin, request, queryset):
             response = HttpResponse(content_type='text/csv')
