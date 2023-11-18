@@ -49,12 +49,12 @@ class CsvImportForm(forms.Form):
 class MemberAdmin(admin.ModelAdmin):
     form = MemberAdminForm
     list_display = [
+        "username",
         "first_name",
         "last_name",
         "gang",
         "room_number",
         "email",
-        "username",
     ]
     readonly_fields = [
         "created",
