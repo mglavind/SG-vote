@@ -22,9 +22,9 @@ def home(request):
 
 def login_user(request):
     if request.method == "POST":
-        username = request.POST['username'].lower()
+        lower_username = request.POST['username'].lower()
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=lower_username, password=password)
         if user is not None:
             login(request, user)
             return redirect('polls:index')
@@ -61,13 +61,42 @@ def register_user(request):
     })
 
 
+def member_vote_detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    member = request.user
+
+    # Retrieve the MemberVote for the member and the question
+    try:
+        member_vote = MemberVote.objects.get(member=member, question=question)
+    except MemberVote.DoesNotExist:
+        # Handle the case where the member hasn't voted for this question
+        messages.error(request, "You haven't voted for this question.")
+        return redirect('polls:index')
+
+    return render(request, 'polls/member_vote_detail.html', {
+        'question': question,
+        'member_vote': member_vote,
+    })
+
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'question_lists'
     
+    
     def get_queryset(self):
         now = timezone.now()
+        user = self.request.user
+
+        # Get the member if the user is authenticated, or None if not
+        member = None
+        if user.is_authenticated:
+            try:
+                member = get_user_model().objects.get(username=user)
+            except get_user_model().DoesNotExist:
+                # Handle the case where the member does not exist
+                member = None
+
         open_questions = Question.objects.filter(
             is_published=True,
             closing_date_time__gt=now,
@@ -84,10 +113,19 @@ class IndexView(generic.ListView):
             closing_date_time__lt=now
         ).order_by('-pub_date')  # Questions that have been published but are closed
 
+        # Questions where the member has already voted but the poll is still open
+        voted_questions = Question.objects.filter(
+            is_published=True,
+            pub_date__lt=now,
+            membervote__member=member
+        ).exclude(pub_date__gt=now)
+
+
         return {
             'open_questions': open_questions,
             'upcoming_questions': upcoming_questions,
             'closed_questions': closed_questions,
+            'voted_questions': voted_questions,
         }
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
@@ -122,6 +160,16 @@ def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     member = request.user  # Assuming you're using authentication
 
+     # Check if the question is published
+    if not question.is_published:
+        messages.error(request, "This question is not currently published.")
+        return redirect('polls:index')
+
+    # Check if the voting period for the question is still open
+    if not question.is_open():
+        messages.error(request, "Voting for this question is closed.")
+        return redirect('polls:index')
+
     # Check if the member has already voted for this question
     if MemberVote.objects.filter(member=member, question=question).exists():
         messages.error(request, "You have already voted for this question.")
@@ -143,3 +191,6 @@ def vote(request, question_id):
         MemberVote.objects.create(member=member, question=question, choice=selected_choice)
 
         return redirect('polls:results', pk=question.id)
+    
+
+

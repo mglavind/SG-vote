@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ question.question_text }}</h2>
+    <p>Valgmuligheder:</p>
+    <ul>
+        {% for choice in question.choice_set.all %}
+            <li>{{ choice.choice_text }}</li>
+        {% endfor %}
+    </ul>
+    <p>Du stemte: {{ member_vote.choice.choice_text }}</p>
+{% endblock %}
