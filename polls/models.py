@@ -5,6 +5,9 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 
+from django.contrib.admin.models import LogEntry, ADDITION
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class Member(AbstractUser):
@@ -78,3 +81,16 @@ class MemberVote(models.Model):
         if MemberVote.objects.filter(member=self.member, question=self.question).exists():
             raise ValueError("Member has already voted for this question.")
         super().save(*args, **kwargs)
+
+        # Log the vote action
+        question_content_type = ContentType.objects.get_for_model(Question)
+        LogEntry.objects.log_action(
+            user_id=self.member.id,
+            content_type_id=question_content_type.id,
+            object_id=self.question.id,
+            object_repr="Voted on choice '{}'".format(self.question.question_text),
+            action_flag=ADDITION,
+            change_message="Voted on choice '{}'".format(self.choice),
+        )
+
+    

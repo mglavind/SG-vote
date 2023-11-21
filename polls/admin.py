@@ -56,6 +56,7 @@ class MemberAdmin(admin.ModelAdmin):
         "gang",
         "room_number",
         "email",
+        "last_updated"
     ]
     readonly_fields = [
         "created",
